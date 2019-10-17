@@ -1,15 +1,7 @@
-{%extends 'all-insta/base.html'%} 
-{% load bootstrap3 %}
-<!-- Some content here-->
-
-<!-- Looping through news end   -->
-<div class="container-fluid">
-
-  <form  action="{%url 'insta'%}" method="post">
-    {%csrf_token%}
-
-    {% bootstrap_form letterForm layout='inline' %}
-    <input type="submit" value="Subscribe">
-  </form>
-
+{%extends 'all_insta/base.html'%} {%load staticfiles%} {%load bootstrap3 %} {% block content %}
+<div class="row">
+    <div style="overflow:scroll; height:400px;">
+        <h3>OOOPs !! you are not followig anyone yet. <a href="{% url 'viewProfiles' %}">Click here</a> to find people to follow</h3>
+    </div>
 </div>
+{% endblock%}
