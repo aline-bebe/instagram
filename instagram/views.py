@@ -1,6 +1,4 @@
 
-
-
 from django.http  import Http404
 from django.shortcuts import render,redirect
 from . models import Image ,Profile, Like, Follow, Comment
@@ -139,7 +137,7 @@ def update_profile(request):
             form = ProfileUpdateForm()
 
 
-    return render(request,'profile/update_profile.html',{"title":title,"current_user":current_user,"form":form})
+    return render(request,'profile/update.html',{"title":title,"current_user":current_user,"form":form})
 
 @login_required(login_url='/accounts/login/')
 def profile(request):
@@ -179,7 +177,7 @@ def more(request,image_id):
 @login_required(login_url='/accounts/login/')
 def view_profiles(request):
     all_profiles = Profile.objects.all()
-    return render(request,'profile/all.html',{"all_profiles":all_profiles}) 
+    return render(request,'profile/display.html',{"all_profiles":all_profiles}) 
 
 @login_required(login_url='/accounts/login/')
 def follow(request,profile_id):
