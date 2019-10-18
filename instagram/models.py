@@ -3,7 +3,9 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 
 class Profile(models.Model):
-    
+    '''
+    class that defines the structure of each profile object
+    '''
     username = models.CharField(max_length=30,default='User')
     profile_photo = models.ImageField(upload_to="images/",null = True)
     bio = models.TextField(default='User does not have bio yet',blank=True)
@@ -149,7 +151,3 @@ class Follow(models.Model):
     
 
  
-
-class NewsLetterRecipients(models.Model):
-    name = models.CharField(max_length = 30)
-    email = models.EmailField()
