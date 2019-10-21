@@ -1,0 +1,31 @@
+{%extends 'base.html'%} 
+{% load bootstrap4 %}
+{%block content%}
+<div class="container">
+
+  <div class="row">
+    {% if profiles%}
+      <h2>Found {{ profiles|length }} of searched term {{message}}</h2>
+    {% else %}
+      <h2> Found 0 profiles for the search term {{message}}</h2>
+    {% endif %}
+
+  </div>
+
+  <div class="row">
+
+  {% if profiles %}
+    {% for pic in profiles %}
+      <div class="col-sm-6 col-md-3">
+          <h1>{{pic.title}}</h1>
+      </div>
+
+     <!--Display news Article images  -->
+     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <img src="{{pic.profile_pic.url}}" class="img-responsive" alt="Image">
+      </div>
+    {% endfor %}
+  {% endif %}
+  </div>
+</div>
+{% endblock %}
