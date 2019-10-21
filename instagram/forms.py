@@ -1,35 +1,20 @@
 from django import forms
-from . models import Image, Comment, Profile
-from django.contrib.auth.forms import AuthenticationForm
+from .models import Profile, Image, Comments
 
+class UpdateProfile(forms.ModelForm):
+    """Enables the user to update their bio and profile pic"""
+    class Meta:
+        model =Profile
+        exclude = ['user']
 
-class ImageForm(forms.ModelForm): 
-    '''
-    class that creates and image upload form
-    '''
+class PostImageForm(forms.ModelForm):
+    """Enabling the user to upload images"""
     class Meta:
         model = Image
-        fields = ['image','image_name','image_caption']
+        exclude = ['user','post_date', 'likes']
 
 class CommentForm(forms.ModelForm):
-    '''
-    class that creates the comment form
-    '''
+    """Enables user to comment on images"""
     class Meta:
-        model = Comment
-        fields = ['comment']
-
-class ProfileUpdateForm(forms.Form):
-    '''
-    classs that creates profile update form
-    ''' 
-    username = forms.CharField(label='Username',max_length = 30)
-    profile_photo = forms.ImageField(label = 'Image Field') 
-    bio = forms.CharField(label='Image Caption',max_length=500)
-
-class UpdateImageCaption(forms.Form):
-    '''
-    class that creates the caption update form
-    '''
-    image_caption = forms.CharField(label='Image Caption',max_length=300)
-
+        model = Comments
+        exclude = ['user','pub_time', 'image']

@@ -1,153 +1,98 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Sum
+
 
 class Profile(models.Model):
-    '''
-    class that defines the structure of each profile object
-    '''
-    username = models.CharField(max_length=30,default='User')
-    profile_photo = models.ImageField(upload_to="images/",null = True)
-    bio = models.TextField(default='User does not have bio yet',blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null= True )
-    
-    def __str__(self):
-        return self.username
+    """
+    class that extends the user profile from django
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    profile_pic = models.ImageField(upload_to='profiles/')
+    bio = models.CharField(max_length=250)
+
+    @classmethod
+    def get_user(cls, user):
+        ask = cls.objects.filter(user=user)
+        return ask
+
+    @classmethod
+    def update_profile(cls, id, bio, pic):
+        upd8 = cls.objects.filter(user=id)
+        upd8.bio= bio
+        upd8.profile_pic = pic
+        upd8.save()
 
     def save_profile(self):
         self.save()
 
-    def delete_profile(self):
-        self.delete()
-
+    @classmethod
+    def search_profiles(cls, search_term):
+        return cls.objects.filter(user__username__icontains=search_term)
 
     @classmethod
-    def find_profile(cls,name):
-        found_profiles = cls.objects.filter(username__icontains = name).all()
-        return found_profiles
-
+    def delete_profile(cls, id):
+        to_delete = cls.objects.filter(id=id)
+        to_delete.delete()
 
 class Image(models.Model):
-    image = models.ImageField(upload_to="images/",null = True )
-    image_name = models.CharField(max_length =30,null = True ) 
-    image_caption = models.TextField(null = True )
-    pub_date = models.DateTimeField(auto_now_add=True, null= True)
-    profile_key = models.ForeignKey(Profile,on_delete=models.CASCADE, null = True)
-    user_key = models.ForeignKey(User,on_delete= models.CASCADE , null = True)
-    likes = models.PositiveIntegerField(default=0)
-    comments_number = models.PositiveIntegerField(default=0)
-        
+    """
+    class that defines the images to be uploaded on the site
+    """
+    image = models.ImageField(upload_to='images/')
+    name = models.CharField(max_length=30)
+    caption = models.CharField(max_length=100)
+    post_date = models.DateTimeField(auto_now_add=True)
+    likes = models.IntegerField(default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+
     def __str__(self):
-        return self.image_name 
+        return self.name
 
     def save_image(self):
         self.save()
 
-    def delete_image(self):
-        self.delete() 
-
-    def update_caption(self,new_caption):
-        self.image_caption = new_caption
+    def update_caption(self, update):
+        self.caption = update
         self.save()
 
     @classmethod
-    def get_image_by_id(cls,id):
-        retrived_image = Image.objects.get(id = id)
-        return retrived_image
+    def delete_image(cls, id):
+        to_delete = cls.objects.filter(id=id)
+        to_delete.delete()
 
     @classmethod
-    def get_images_by_user(cls,id):
-        posted_images = Image.objects.filter(user_id=id)
-        return posted_images
-
-    class Meta:
-        '''
-        Order posts with most recent at the top
-        '''
-        ordering = ['-pub_date']
+    def get_by_user(cls, id):
+        return cls.objects.filter(user=id)
 
     @classmethod
-    def get_all_images(cls):
-        all_posted_images = cls.objects.all()
-        return all_posted_images 
+    def get_all(cls):
+        return cls.objects.all().order_by('-id')
 
     @classmethod
-    def get_timeline_posts(cls):
-        '''
-        function that gets all posts of the people that the current user follower
-        '''
-        timeline_posts = Image.objects.filter()
+    def search_image(cls, search_term):
+        return cls.objects.filter(caption__icontains=search_term)
 
-class Comment(models.Model):
-    '''
-    class that defines the structure of an comment on image
-    '''
-    user_id = models.ForeignKey(User,on_delete=models.CASCADE, null= True)
-    image_id = models.ForeignKey(Image,on_delete=models.CASCADE, null= True)
-    comment= models.TextField(blank=True)
+    @classmethod
+    def get_img_by_id(cls, ide):
+        picture = cls.objects.get(id=ide)
+        return picture
+
+
+class Comments(models.Model):
+    """
+    class that defines the post comments
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    image = models.ForeignKey(Image, on_delete=models.CASCADE, default=1)
+    comment = models.CharField(max_length=250)
+    pub_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.comment
+        return self.name
 
     def save_comment(self):
-        '''
-        method that save a comment on an image
-        '''
-        self.sa
-    def delete_comment(self):
-        '''
-        methods that deletes a comment on an image
-        '''
-        self.delete()
-
-
-class Like(models.Model):
-    '''
-    Class defines the structure of a like on a an posted Image
-    '''
-    user = models.ForeignKey(User,on_delete=models.CASCADE, null= True)
-
-    image = models.ForeignKey(Image,on_delete=models.CASCADE, null = True)
-
-    def __int__(self):
-        return self.user.username
-
-    def save_like(self):
-        self.save() 
-
-    def unlike(self):
-        self.delete()
-
-    def like(self):
-        self.likes_number = 2
         self.save()
 
     @classmethod
-    def get_likes(cls,image_id):
-        '''
-        Function that get likes belonging to a paticular posts
-        '''
-        likes = cls.objects.filter(image = image_id)
-        return likes 
-
-class Follow(models.Model):
-    '''
-    Class that defines followers of each user
-    '''
-    follower = models.ForeignKey(User,on_delete=models.CASCADE, null= True)
-    user = models.ForeignKey(Profile,on_delete=models.CASCADE, null= True)
-    
-    def __int__(self):
-        return self.follower.username 
-    
-    def save_follower(self):
-        self.save()
-
-    @classmethod
-    def get_followers(cls,profile_id):
-        profile = Profile.objects.filter(id = profile_id)
-        followers = cls.objects.filter(user= profile.user.id)
-        return len(followers)
-    
-
- 
+    def get_by_image(cls, id):
+        return cls.objects.filter(image=id)

@@ -1,184 +1,56 @@
 from django.test import TestCase
-from . models import Image, Profile, Comment, Like
+from django.contrib.auth.models import User
+from .models import Image,Profile
 
-class ImageTestClass(TestCase):
-    '''
-    A class that test the Image class model
-    '''
-
+# Create your tests here.
+class ProfileTestClass(TestCase):
     def setUp(self):
-        '''
-        method that runs at the begginning of each test
-        '''
-        self.image = Image(image = 'image_url',image_name ='pizza' , image_caption='i like it',)
+        self.new_user = User.objects.create_user(username='user',password='user-password')
+        self.new_profile = Profile(id=1,user=self.new_user,profile_pic='images/profiles/DSC_0124',bio = 'user bio')
 
     def test_instance(self):
-        '''
-        method that test is image objects are instanciated correctly
-        '''
-        self.assertTrue(isinstance(self.image,Image)) 
-
-    def test_save_image(self):
-        '''
-        method that test the save method of model image
-        '''
-        self.image.save_image()
-        all_images= Image.objects.all()
-        self.assertTrue(len(all_images)>0)
-
-    def test_delete_images(self):
-        '''
-        method that tests the delete_images method
-        '''
-        self.image.save_image()
-        new_image = Image(image = 'image_url1',image_name ='pizza1' , image_caption='delicious',)
-        new_image.save_image()
-        self.image.delete_image()
-        all_images = Image.objects.all()
-        self.assertTrue(len(all_images)==1)
-
-    def test_update_caption(self):
-        '''
-        method that tests the update caption
-        '''
-        self.image.save_image()
-        image = Image.objects.get(image ='image_url')
-        image.update_caption('new caption')
-        image = Image.objects.get(image ='image_url')
-        self.assertTrue(image.image_caption=='new caption')
-
-    def test_get_image_by_id(self):
-        '''
-        method that tests the get image by id function of image model
-        '''
-        pass
-
-
-class ProfileTestClass(TestCase):
-    '''
-    class that test the characteristics of the Profile model
-    '''
-
-    def setUp(self):
-        '''
-        method that runs at the begginning of each test
-        '''
-        self.profile = Profile(profile_photo ='test_profile_photo', bio = 'test_bio')
+        self.assertTrue(isinstance(self.new_profile,Profile))
 
     def test_save_profile(self):
-        '''
-        method that tests save method of the Profile model
-        '''
-        self.profile.save_profile()
-        all_profiles = Profile.objects.all()
-        self.assertTrue(len(all_profiles)>0)
+        self.new_profile.save_profile()
+        profiles = Profile.objects.all()
+        self.assertTrue(len(profiles) > 0)
 
-        
     def test_delete_profile(self):
-        '''
-        method that tests the delete_profile method
-        '''
-        self.profile.save_profile()
-        profile2 = Profile(profile_photo ='test_profile_photo2',bio = 'test_bio2')
-        profile2.save_profile()
-        self.profile.delete_profile()
-        all_profiles = Profile.objects.all()
-        self.assertTrue(len(all_profiles)==1)
+        self.new_profile.delete_profile()
+        profiles = Profile.objects.all()
+        self.assertTrue(len(profiles)==0)
 
-    def test_find_profile(self):
-        '''
-        method that tests the find_profile method
-        '''
-        self.profile.save_profile()
-        profile2 = Profile(profile_photo ='test_profile_photo2',bio = 'test_bio2')
-        profile2.save_profile()
-        search_profile = Profile.find_profile('test_bio2')
-        self.assertTrue(len(search_profile)==2)
+    def test_update_bio(self):
+        self.new_profile.save_profile()
+        self.new_profile = Profile.objects.get(id=1)
+        profile = self.new_profile
+        self.updated_profile = Profile.objects.get(id=1)
+        self.assertEqual(self.updated_profile.bio,'changed user bio')
 
-class CommentTestClass(TestCase):
-    '''
-    class that test the characteristics of the Comment model
-    '''
-
+class ImageTestClass(TestCase):
     def setUp(self):
-        '''
-        method that runs at the begginning of each test
-        '''
-        self.new_comment = Comment(comment= "this is a test comment")
-        self.new_comment.save()
+        self.new_user = User.objects.create_user(username='user',password='user-password')
+        self.new_profile = Profile(user=self.new_user)
+        self.new_profile.save()
+        self.new_image = Image(id=1,image='photos/photo',image_title='Image',image_caption='Image caption',user_profile=self.new_user)
 
     def test_instance(self):
-        '''
-        Test that checks if the created comment is an instance of the class Comment
-        '''
-        self.assertTrue(isinstance(self.new_comment,Comment))
+        self.assertTrue(isinstance(self.new_image,Image))
 
-    def test_save_comment(self):
-        '''
-        method that tests save method of the Comment model
-        '''
-        self.new_comment.save_comment()
-        all_comments = Comment.objects.all()
-        self.assertTrue(len(all_comments)>0)
+    def test_save_image(self):
+        self.new_image.save()
+        images = Image.objects.all()
+        self.assertTrue(len(images) > 0)
 
-        
-    def test_delete_comment(self):
-        '''
-        method that tests the delete_profile method
-        '''
-        self.new_comment.save_comment()
-        comment2 = Comment(comment='this is the seconf test comment')
-        comment2.save_comment()
-        self.new_comment.delete_comment()
-        all_comments = Comment.objects.all()
-        self.assertTrue(len(all_comments)==1)
+    def test_delete_image(self):
+        self.new_image.delete_image()
+        images = Image.objects.all()
+        self.assertTrue(len(images) == 0)
 
-class LikesTestClass(TestCase):
-    '''
-    class that test the characteristics of the Comment model
-    '''
-
-    def setUp(self):
-        '''
-        Method that runs at the beggining of each test
-        '''
-        self.new_like = Like (likes_number=0) 
-
-    def test_instance(self):
-        '''
-        Test whether an object is an instance of class Like
-        '''
-        self.assertTrue(isinstance(self.new_like, Like))
-
-    def test_save_like(self):
-        '''
-        Test whether the save_likes method works
-        '''
-        self.new_like.save_like()
-        likes = Like.objects.all()
-        self.assertTrue(len(likes)>0)
-
-    def test_unlike(self):
-        self.new_like.save_like()
-        self.new_like.unlike()
-        like_status = self.new_like.likes_number
-        self.assertTrue(like_status == 1)
-
-    def test_like(self):
-        self.new_like.save_like()
-        self.new_like.like()
-        like_status = self.new_like.likes_number
-        self.assertTrue(like_status == 2)
-
-    
-    
-
-    
-
-
-
-
-
-
-   
-
+    def test_update_caption(self):
+        self.new_image.save_image()
+        self.new_image = Image.objects.get(pk = 1)
+        self.new_image.update_caption('changed Image caption')
+        self.updated_image = Image.objects.get(id = 1)
+        self.assertEqual(self.updated_image.image_caption,"changed Image caption")
