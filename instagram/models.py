@@ -38,7 +38,7 @@ class Image(models.Model):
     """
     class that defines the images to be uploaded on the site
     """
-    image = models.ImageField(upload_to='pictures/')
+    image = models.ImageField(upload_to='images/')
     name = models.CharField(max_length=30)
     caption = models.CharField(max_length=100)
     post_date = models.DateTimeField(auto_now_add=True)
