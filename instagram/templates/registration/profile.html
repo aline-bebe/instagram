@@ -3,8 +3,8 @@
 {%block content%}
 <div class="container" id="bod">
   <img src="{{profile.profile_pic.url}}" alt="{{profile.user.username}}" width="150", height="150", style="border-radius: 50%;">
-  {{user.username}}
-  {{profile.bio}}
+  {{user.username}} <br>
+  {{profile.bio}} <br>
   <a href="/logout">Logout</a>
   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">
   Edit profile
