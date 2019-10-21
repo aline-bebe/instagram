@@ -60,7 +60,7 @@ def search_results(request):
         return render(request, 'search.html', {'message': message})
 
 @login_required(login_url='/accounts/login/')
-def single_pic(request, img):
+def picture(request, img):
     user = request.user
     picture = Image.get_img_by_id(img)
     comments = Comments.get_by_image(img)
