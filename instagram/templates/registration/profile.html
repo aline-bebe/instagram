@@ -53,7 +53,7 @@
 </div>
 
   <div class="row">
-    {% for pic in photo%}
+    {% for pic in pics%}
     <!--Displaying the pictures-->
     <div class="card col-xs-4 col-sm-4 col-md-4 col-lg-4">
       <img class="card-img-top" src="{{pic.image.url}}" alt="Image">
@@ -61,7 +61,9 @@
     </div>
 
     {% empty %}
-  
+    <div class="row">
+      <h2 class="text-center">There are No Pictures</h2>
+    </div>
     {% endfor %}
   </div>
 </div>
