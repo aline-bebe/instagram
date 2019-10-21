@@ -15,7 +15,7 @@ def welcome(request):
 def profile(request):
     user = request.user
     profiles = Profile.get_user(user.id)
-    pics = Image.get_by_user(user.id)
+    picture = Image.get_by_user(user.id)
     if profiles:
         profile = profiles[len(profiles)-1]
     else:
@@ -41,7 +41,7 @@ def profile(request):
         profile_form = UpdateProfile()
         upload_form = PostImageForm()
         comment_form = CommentForm
-    return render(request, 'registration/profile.html', {'user': user, 'profile': profile, 'pics': pics, 'profile_form': profile_form,
+    return render(request, 'registration/profile.html', {'user': user, 'profile': profile, 'picture': picture, 'profile_form': profile_form,
                                             'upload_form': upload_form, 'coment_form': comment_form})
 
 
@@ -49,11 +49,11 @@ def profile(request):
 def search_results(request):
     if 'search' in request.GET and request.GET['search']:
         search_term = request.GET.get('search')
-        search_pics = Image.search_image(search_term)
+        search_picture = Image.search_image(search_term)
         search_prof = Profile.search_profiles(search_term)
         message = f'{search_term}'
 
-        return render(request, 'search.html', {'message': message, 'pics': search_pics, 'profiles': search_prof})
+        return render(request, 'search.html', {'message': message, 'picture': search_picture, 'profiles': search_prof})
 
     else:
         message = "You haven't searched for any term"
