@@ -26,7 +26,7 @@ class Profile(models.Model):
         self.save()
 
     @classmethod
-    def search_profiles(cls, search_term):
+    def search_image(cls, search_term):
         return cls.objects.filter(user__username__icontains=search_term)
 
     @classmethod

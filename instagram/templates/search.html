@@ -4,18 +4,18 @@
 <div class="container">
 
   <div class="row">
-    {% if profiles%}
-      <h2>Found {{ profiles|length }} of searched term {{message}}</h2>
+    {% if picture%}
+      <h2>Found {{ picture|length }} of searched term {{message}}</h2>
     {% else %}
-      <h2> Found 0 profiles for the search term {{message}}</h2>
+      <h2> Found 0 picture for the search term {{message}}</h2>
     {% endif %}
 
   </div>
 
   <div class="row">
 
-  {% if profiles %}
-    {% for pic in profiles %}
+  {% if picture %}
+    {% for pic in picture %}
       <div class="col-sm-6 col-md-3">
           <h1>{{pic.name}}</h1>
       </div>
