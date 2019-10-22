@@ -15,7 +15,7 @@ def welcome(request):
 def profile(request):
     user = request.user
     profiles = Profile.get_user(user.id)
-    picture = Image.get_by_user(user.id)
+    pics = Image.get_by_user(user.id)
     if profiles:
         profile = profiles[len(profiles)-1]
     else:
@@ -41,7 +41,7 @@ def profile(request):
         profile_form = UpdateProfile()
         upload_form = PostImageForm()
         comment_form = CommentForm
-    return render(request, 'registration/profile.html', {'user': user, 'profile': profile, 'picture': picture, 'profile_form': profile_form,
+    return render(request, 'registration/profile.html', {'user': user, 'profile': profile, 'pics': pics, 'profile_form': profile_form,
                                             'upload_form': upload_form, 'coment_form': comment_form})
 
 
@@ -49,11 +49,11 @@ def profile(request):
 def search_results(request):
     if 'search' in request.GET and request.GET['search']:
         search_term = request.GET.get('search')
-        search_picture = Image.search_image(search_term)
+        search_pics = Image.search_image(search_term)
         search_prof = Profile.search_profiles(search_term)
         message = f'{search_term}'
 
-        return render(request, 'search.html', {'message': message, 'picture': search_picture, 'profiles': search_prof})
+        return render(request, 'search.html', {'message': message, 'pics': search_pics, 'profiles': search_prof})
 
     else:
         message = "You haven't searched for any term"
@@ -62,17 +62,17 @@ def search_results(request):
 @login_required(login_url='/accounts/login/')
 def picture(request, img):
     user = request.user
-    picture = Image.get_img_by_id(img)
+    pics = Image.get_img_by_id(img)
     comments = Comments.get_by_image(img)
     if request.method == 'POST':
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
             comment.user = user
-            comment.image = picture
+            comment.image = pics
             comment.save()
-            return redirect('picture', picture.id)
+            return redirect('pics', pics.id)
     else:
         comment_form = CommentForm()
 
-    return render(request, 'picture.html', {'comment_form': comment_form, 'pic': picture, 'user': user, 'comments': comments})
+    return render(request, 'pics.html', {'comment_form': comment_form, 'pic': pics, 'user': user, 'comments': comments})
